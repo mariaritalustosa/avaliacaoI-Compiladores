@@ -18,3 +18,18 @@ PALAVRAS_RESERVADAS = {
     "float": "type",
 }
 SIMBOLOS = set("{}();+*/")
+
+class AnalisadorLexico:
+    def __init__(self, texto):
+        self.texto = texto
+        self.posicao = 0
+        self.linha = 1
+    
+    def _peek(self, deslocamento=0):
+        indice = self.posicao + deslocamento
+        if indice < len(self.texto):
+            return self.texto[indice]
+        return ""
+
+    def proximo_token(self):
+            
