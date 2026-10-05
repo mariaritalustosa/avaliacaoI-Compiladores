@@ -139,4 +139,10 @@ class AnalisadorSintatico:
             f"esperado {esperado}, encontrado " f"{self._descricao(self.token_atual)}",
             self.token_atual.linha)
 
+    def _procura_variavel(self, nome):
+        for escopo in reversed(self.escopos):
+            if nome in escopo:
+                return escopo[nome]
+        return None
+
     def       
