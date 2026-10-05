@@ -32,4 +32,34 @@ class AnalisadorLexico:
         return ""
 
     def proximo_token(self):
-            
+            while True:
+                caractere = self._peek()
+                if caractere == "":
+                    return Token("EOF", "", self.linha)
+
+                if caractere in " \t\r\f\v":
+                    self.pos += 1
+
+                elif caractere == "\n":
+                    self.linha += 1
+                    self.pos += 1
+                
+                elif caractere == "/" and self._espia(1) == "*":
+                    linha_inicio = self.linha
+                    self.pos += 2
+                    while not (self._peek() == "*" and self._peek(1) == "/"):
+                        if self._peek() == "":
+                            raise ErroCompilador(
+                                "léxico", "comentário '/*' não foi fechado",
+                                linha_inicio)
+                        if self._peek() == "\n":
+                            self.linha += 1
+                        self.pos += 1
+                    self.pos += 2
+
+                elif caractere == "/" and self._peek(1) == "/":
+                    while self._peek() not in ("", "\n"):
+                        self.pos += 1
+
+                else:
+                    break                            
