@@ -62,4 +62,29 @@ class AnalisadorLexico:
                         self.pos += 1
 
                 else:
-                    break                            
+                    break 
+
+
+            caractere = self._peek()
+            linha_token = self.linha   
+
+            if caractere.isdigit():
+                inicio = self.pos
+                while self._peek().isdigit():
+                    self.pos += 1
+                if self._peek() == ".":
+                    if not self._peek(1).isdigit():
+                        raise ErroCompilador(
+                            "léxico", "número de ponto flutuante não informado corretamente",
+                            linha_token)
+                    self.pos += 1
+                    while self._peek().isdigit():
+                        self.pos += 1
+                if self._peek().isalpha():
+                    lido = self.texto[inicio:self.pos + 1]
+                    raise ErroCompilador(
+                        "léxico", f"número seguido de letra: '{lido}'",
+                        linha_token)
+                return Token("num", self.texto[inicio:self.pos], linha_token)
+
+            if                                                 
