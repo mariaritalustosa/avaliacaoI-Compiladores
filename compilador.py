@@ -124,4 +124,19 @@ class AnalisadorSintatico:
         if token.tipo == "EOF":
             return "fim do código"
         return f"'{token.lexema}'"
-        
+    
+    def match(self, tipo_esperado):
+        if self.token_atual.tipo == tipo_esperado:
+            token = self.token_atual
+            self._avanca()
+            return token
+        if tipo_esperado == "EOF":
+            esperado = "fim do código"
+        else:
+            esperado = f"'{tipo_esperado}"
+        raise ErroCompilador(
+            "sintático",
+            f"esperado {esperado}, encontrado " f"{self._descricao(self.token_atual)}",
+            self.token_atual.linha)
+
+    def       
