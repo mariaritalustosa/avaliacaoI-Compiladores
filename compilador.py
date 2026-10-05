@@ -99,4 +99,12 @@ class AnalisadorLexico:
                         linha_token)
                 tipo = PALAVRAS_RESERVADAS.get(lexema, "id")
                 return Token(tipo, lexema, linha_token)                      
+            
+            if caractere in SIMBOLOS:
+                self.pos += 1
+                return Token(caractere, caractere, linha_token)
 
+            raise ErroCompilador(
+                "léxico", f"caractere inválido '{caractere}'",
+                linha_token
+            )    
