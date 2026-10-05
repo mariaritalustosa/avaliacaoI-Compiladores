@@ -116,4 +116,12 @@ class AnalisadorSintatico:
         self.posfixa = []
         self.escopos = []
         self.traducoes = []
+
+    def _avanca(self):
+        self.token_atual = self.lexico.proximo_token()
+
+    def _descricao(self, token):
+        if token.tipo == "EOF":
+            return "fim do código"
+        return f"'{token.lexema}'"
         
