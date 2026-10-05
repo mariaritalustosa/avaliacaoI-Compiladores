@@ -157,3 +157,19 @@ class AnalisadorSintatico:
         self.stmts()
         self.match("}")
         self.escopos.pop()      
+
+    def decls(self):
+        while self.token_atual.tipo == "type":
+            self.decl()
+    
+    def decl(self):
+        tipo_variavel = self.match("type").lexema
+        token_id = self.match("id")
+        escopo_atual = self.escopos[-1]
+        if token_id.lexema in escopo_atual:
+            raise ErroCompilador(
+                "semântico",
+                f"variável '{token_id.lexema}' já declarada nesse local",
+                token_id.linha)
+        escopo_atual[token_id.lexema] = tipo_variavel
+        self.match(";")
