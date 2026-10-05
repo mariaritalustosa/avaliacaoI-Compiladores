@@ -108,3 +108,12 @@ class AnalisadorLexico:
                 "léxico", f"caractere inválido '{caractere}'",
                 linha_token
             )    
+
+class AnalisadorSintatico:
+    def __init__(self, texto):
+        self.lexico = AnalisadorLexico(texto)
+        self.token_atual = self.lexico.proximo_token()
+        self.posfixa = []
+        self.escopos = []
+        self.traducoes = []
+        
