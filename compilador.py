@@ -87,4 +87,16 @@ class AnalisadorLexico:
                         linha_token)
                 return Token("num", self.texto[inicio:self.pos], linha_token)
 
-            if                                                 
+            if caractere.isalpha() and caractere.isascii():
+                inicio = self.pos
+                while self._peek().isalpha() and self._peek().isascii():
+                    self.pos += 1
+                lexema = self.texto[inicio:self.pos]
+                if self._peek().isdigit():
+                    raise ErroCompilador(
+                        "léxico", 
+                        f"identificador só pode conter letras: " f"'{lexema}{self._peek()}'",
+                        linha_token)
+                tipo = PALAVRAS_RESERVADAS.get(lexema, "id")
+                return Token(tipo, lexema, linha_token)                      
+
