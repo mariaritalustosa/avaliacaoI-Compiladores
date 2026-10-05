@@ -145,4 +145,15 @@ class AnalisadorSintatico:
                 return escopo[nome]
         return None
 
-    def       
+    def program(self):
+        self.match("Matexpr")
+        self.block()
+        self.match("EOF")
+
+    def block(self):
+        self.match("{")
+        self.escopos.append({})
+        self.decls()
+        self.stmts()
+        self.match("}")
+        self.escopos.pop()      
