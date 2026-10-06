@@ -17,7 +17,7 @@ PALAVRAS_RESERVADAS = {
     "int": "type",
     "float": "type",
 }
-SIMBOLOS = set("{}();+*/")
+SIMBOLOS = set("{}();+-*/")
 
 class AnalisadorLexico:
     def __init__(self, texto):
@@ -38,15 +38,15 @@ class AnalisadorLexico:
                     return Token("EOF", "", self.linha)
 
                 if caractere in " \t\r\f\v":
-                    self.pos += 1
+                    self.posicao += 1
 
                 elif caractere == "\n":
                     self.linha += 1
-                    self.pos += 1
+                    self.posicao += 1
                 
-                elif caractere == "/" and self._espia(1) == "*":
+                elif caractere == "/" and self._peek(1) == "*":
                     linha_inicio = self.linha
-                    self.pos += 2
+                    self.posicao += 2
                     while not (self._peek() == "*" and self._peek(1) == "/"):
                         if self._peek() == "":
                             raise ErroCompilador(
@@ -54,12 +54,12 @@ class AnalisadorLexico:
                                 linha_inicio)
                         if self._peek() == "\n":
                             self.linha += 1
-                        self.pos += 1
-                    self.pos += 2
+                        self.posicao += 1
+                    self.posicao += 2
 
                 elif caractere == "/" and self._peek(1) == "/":
                     while self._peek() not in ("", "\n"):
-                        self.pos += 1
+                        self.posicao += 1
 
                 else:
                     break 
@@ -69,29 +69,29 @@ class AnalisadorLexico:
             linha_token = self.linha   
 
             if caractere.isdigit():
-                inicio = self.pos
+                inicio = self.posicao
                 while self._peek().isdigit():
-                    self.pos += 1
+                    self.posicao += 1
                 if self._peek() == ".":
                     if not self._peek(1).isdigit():
                         raise ErroCompilador(
                             "léxico", "número de ponto flutuante não informado corretamente",
                             linha_token)
-                    self.pos += 1
+                    self.posicao += 1
                     while self._peek().isdigit():
-                        self.pos += 1
+                        self.posicao += 1
                 if self._peek().isalpha():
-                    lido = self.texto[inicio:self.pos + 1]
+                    lido = self.texto[inicio:self.posicao + 1]
                     raise ErroCompilador(
                         "léxico", f"número seguido de letra: '{lido}'",
                         linha_token)
-                return Token("num", self.texto[inicio:self.pos], linha_token)
+                return Token("num", self.texto[inicio:self.posicao], linha_token)
 
             if caractere.isalpha() and caractere.isascii():
-                inicio = self.pos
+                inicio = self.posicao
                 while self._peek().isalpha() and self._peek().isascii():
-                    self.pos += 1
-                lexema = self.texto[inicio:self.pos]
+                    self.posicao += 1
+                lexema = self.texto[inicio:self.posicao]
                 if self._peek().isdigit():
                     raise ErroCompilador(
                         "léxico", 
@@ -101,7 +101,7 @@ class AnalisadorLexico:
                 return Token(tipo, lexema, linha_token)                      
             
             if caractere in SIMBOLOS:
-                self.pos += 1
+                self.posicao += 1
                 return Token(caractere, caractere, linha_token)
 
             raise ErroCompilador(
@@ -133,7 +133,7 @@ class AnalisadorSintatico:
         if tipo_esperado == "EOF":
             esperado = "fim do código"
         else:
-            esperado = f"'{tipo_esperado}"
+            esperado = f"'{tipo_esperado}'"
         raise ErroCompilador(
             "sintático",
             f"esperado {esperado}, encontrado " f"{self._descricao(self.token_atual)}",
@@ -237,7 +237,7 @@ class AnalisadorSintatico:
 
 def main():
     if len(sys.argv) != 2:
-        print("Uso: python compilador.py <arquivo")
+        print("Uso: python compilador.py <arquivo>")
         sys.exit(1)
     
     try:
