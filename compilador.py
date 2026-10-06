@@ -191,3 +191,21 @@ class AnalisadorSintatico:
             self.expr()
             self.match(";")
             self.traducoes.append(" ".join(self.posfixa))
+    
+    def expr(self):
+        self.term()
+        while self.token_atual.tipo in ("+", "-"):
+            operador = self.token_atual.tipo
+            self._avanca()
+            self.term()
+            self.posfixa.append(operador)
+
+    def term(self):
+        self.fact()
+        while self.token_atual.tipo in ("*", "/"):
+            operador = self.token_atual.tipo
+            self._avanca()
+            self.fact()
+            self.posfixa.append(operador)
+
+    
