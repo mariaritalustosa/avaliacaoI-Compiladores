@@ -234,3 +234,29 @@ class AnalisadorSintatico:
                 f"{self._descricao(self.token_atual)}",
                 self.token_atual.linha
                 )
+
+def main():
+    if len(sys.argv) != 2:
+        print("Uso: python compilador.py <arquivo")
+        sys.exit(1)
+    
+    try:
+        with open(sys.argv[1], "r", encoding="utf-8") as arquivo:
+            texto = arquivo.read()
+    except OSError as erro:
+        print(f"Não foi possível abrir o arquivo: {erro}")
+        sys.exit(1)
+ 
+    analisador = AnalisadorSintatico(texto)
+    try:
+        analisador.program()
+    except ErroCompilador as erro:
+        print(erro)
+        sys.exit(1)
+ 
+    for linha in analisador.traducoes:
+        print(linha)
+ 
+ 
+if __name__ == "__main__":
+    main()
