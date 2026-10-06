@@ -208,4 +208,29 @@ class AnalisadorSintatico:
             self.fact()
             self.posfixa.append(operador)
 
-    
+    def fact(self):
+        tipo = self.token_atual.tipo
+        if tipo == "(":
+            self._avanca()
+            self.expr()
+            self.match(")")
+        elif tipo == "num":
+            self.posfixa.append(self.token_atual.lexema)
+            self._avanca()
+        elif tipo == "id":
+            nome = self.token_atual.lexema
+            if self._procura_variavel(nome) is None:
+                raise ErroCompilador(
+                    "semântico", f"variável '{nome}' não declarada",
+                    self.token_atual.linha)
+
+            self.posfixa.append(nome)
+            self._avanca()
+
+        else:
+            raise ErroCompilador(
+                "sintático",
+                f"esperado '(', número ou identificador, encontrado "
+                f"{self._descricao(self.token_atual)}",
+                self.token_atual.linha
+                )
