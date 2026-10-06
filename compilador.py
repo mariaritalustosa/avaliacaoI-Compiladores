@@ -173,3 +173,21 @@ class AnalisadorSintatico:
                 token_id.linha)
         escopo_atual[token_id.lexema] = tipo_variavel
         self.match(";")
+    
+    def stmts(self):
+        while self.token_atual.tipo in ("{", "(", "num","id"):
+            self.stmt()
+        if self.token_atual.tipo == "type":
+            raise ErroCompilador(
+                "sintático",
+                "declarações devem vir antes dos comandos de bloco",
+                self.token_atual.linha)
+    
+    def stmt(self):
+        if self.token_atual.tipo == "{":
+            self.block()
+        else:
+            self.posfixa = []
+            self.expr()
+            self.match(";")
+            self.traducoes.append(" ".join(self.posfixa))
