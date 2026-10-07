@@ -1,0 +1,21 @@
+Matexpr {
+    int preco;
+    int qtd;
+    float desconto;
+
+    /* total sem desconto */
+    preco * qtd;
+
+    // total com desconto
+    preco * qtd * (1 - desconto);
+
+    {
+        float taxa;
+        taxa * 100 / (preco + 2.5);
+        qtd - 1 - 2 - 3;
+    }
+
+    (preco + qtd) * (preco - qtd);
+    42;
+    desconto;
+}
